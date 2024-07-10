@@ -12,7 +12,12 @@ import {
 import { createFilter } from "rollup-pluginutils";
 import { encode, decode } from "@jridgewell/sourcemap-codec";
 import { readFileSync } from "fs";
-import urljoin from "url-join";
+
+// Dynamic import for 'url-join'
+async function getUrlJoin() {
+  const module = await import("url-join");
+  return module.default;
+}
 
 function hash(content: string) {
   return crypto.createHmac("sha256", content).digest("hex").substr(0, 8);
@@ -109,7 +114,7 @@ const cssChunks: PluginImpl<InputPluginOptions> = function (options = {}) {
       return null;
     },
 
-    generateBundle(
+    async generateBundle(
       this: PluginContext,
       generateBundleOpts: NormalizedOutputOptions,
       bundle: OutputBundle
@@ -119,6 +124,8 @@ const cssChunks: PluginImpl<InputPluginOptions> = function (options = {}) {
         this.warn("No directory provided. Skipping CSS generation");
         emitFiles = false;
       }
+
+      const urljoin = await getUrlJoin();
 
       for (const chunk of Object.values(bundle).reverse()) {
         if (chunk.type === "asset") continue;
