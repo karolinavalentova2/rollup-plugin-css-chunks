@@ -10,7 +10,7 @@ import {
     SourceMapInput
 } from 'rollup';
 import {createFilter} from 'rollup-pluginutils';
-import {encode, decode} from 'sourcemap-codec';
+import {encode, decode} from '@jridgewell/sourcemap-codec';
 import {readFileSync} from "fs";
 import urljoin from 'url-join';
 
